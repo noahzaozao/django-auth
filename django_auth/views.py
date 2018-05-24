@@ -7,9 +7,18 @@ from datetime import datetime
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.http.response import JsonResponse
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View
 
 from django_auth.models import User
+
+
+def get_ip(request):
+    if request.META.has_key('HTTP_X_FORWARDED_FOR'):
+        ip = request.META['HTTP_X_FORWARDED_FOR']
+    else:
+        ip = request.META['REMOTE_ADDR']
+    return ip
 
 
 def api_common(data, code=0, message=_('success')):

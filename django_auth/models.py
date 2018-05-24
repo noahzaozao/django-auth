@@ -22,6 +22,14 @@ class UserManager(_UserManager):
             system = self.model.objects.filter(id=admin.id).first()
         return system
 
+    def get_user(self, username=None, mobile=None):
+        user = None
+        if username:
+            user = self.filter(username=username).first()
+        elif mobile:
+            user = self.filter(mobile=mobile).first()
+        return user
+
 
 class User(_User):
     username_validator = UnicodeUsernameValidator() if six.PY3 else ASCIIUsernameValidator()

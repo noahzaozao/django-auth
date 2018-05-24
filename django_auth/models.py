@@ -28,7 +28,7 @@ class User(_User):
 
     avatar_image = models.ImageField(
         upload_to='media/avatar/%Y/%m',
-        verbose_name='用户头像',
+        verbose_name=_("avatar image"),
         default='media/images/user_avatar.jpg'
     )
     country_code = models.CharField(

@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import six
 from django.contrib.auth.models import User as _User
 from django.contrib.auth.models import UserManager as _UserManager
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from django_auth.user_validators import UnicodeUsernameValidator, ASCIIUsernameValidator
@@ -25,8 +26,23 @@ class UserManager(_UserManager):
 class User(_User):
     username_validator = UnicodeUsernameValidator() if six.PY3 else ASCIIUsernameValidator()
 
+    avatar_image = models.ImageField(
+        upload_to='media/avatar/%Y/%m',
+        verbose_name='用户头像',
+        default='media/images/user_avatar.jpg'
+    )
+    country_code = models.CharField(
+        default='86',
+        max_length=50,
+        verbose_name=_("country code")
+    )
+    mobile = models.CharField(
+        max_length=50,
+        verbose_name=_("mobile")
+    )
+
+    objects = UserManager()
+
     class Meta:
         verbose_name = _("User")
         verbose_name_plural = _("User Management")
-
-    objects = UserManager()

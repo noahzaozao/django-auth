@@ -9,16 +9,15 @@ from django.utils.translation import ugettext_lazy as _
 from django_auth.user_validators import UnicodeUsernameValidator, ASCIIUsernameValidator
 
 
-def get_admin():
-    super_user = User.objects.filter(is_superuser=1).first()
-    return super_user
-
-
 class UserManager(_UserManager):
+    def get_admin(self):
+        super_user = User.objects.filter(is_superuser=1).first()
+        return super_user
+
     def get_system_user(self):
         system = self.model.objects.filter(username='system').first()
         if not system:
-            admin = get_admin()
+            admin = self.get_admin()
             system = self.model.objects.filter(id=admin.id).first()
         return system
 

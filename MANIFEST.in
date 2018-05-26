@@ -1,0 +1,2 @@
+recursive-include django_auth/templates *
+recursive-include django_auth/static *

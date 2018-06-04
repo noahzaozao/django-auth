@@ -139,8 +139,8 @@ class APIUserLoginView(View):
             verfication_code = request.session.get('verfication_code', '')
             request.session['verfication_code'] = ''
             if settings.DEBUG or (verfication_code and str(verfication_code) == str(mobilecode)):
-                ggac_user = User.objects.get_user(mobile=username)
-                if ggac_user is None:
+                user = User.objects.get_user(mobile=username)
+                if user is None:
                     response = api_common({}, -1, _("User not exist"))
                     return JsonResponse(response)
             else:
@@ -148,29 +148,29 @@ class APIUserLoginView(View):
                 return JsonResponse(response)
         else:
             # username/mobile + password
-            ggac_user = User.objects.get_user(username=username)
+            user = User.objects.get_user(username=username)
             wrong_passwd = False
-            if ggac_user:
+            if user:
                 # username + password
                 user = authenticate(username=username, password=password)
                 if not user:
                     wrong_passwd = True
             else:
                 # mobile + password
-                ggac_user = User.objects.get_user(mobile=username)
-                if ggac_user:
-                    user = authenticate(username=ggac_user.username, password=password)
+                user = User.objects.get_user(mobile=username)
+                if user:
+                    user = authenticate(username=user.username, password=password)
                     if not user:
                         wrong_passwd = True
-            if ggac_user and not ggac_user.is_active:
+            if user and not user.is_active:
                 response = api_common({}, -3, _("User banned"))
                 return JsonResponse(response)
             if wrong_passwd:
                 response = api_common({}, -4, _("Incorrect password"))
                 return JsonResponse(response)
 
-        if ggac_user and ggac_user.is_active:
-            login(request, ggac_user)
+        if user and user.is_active:
+            login(request, user)
             if keepLogin == 'true':
                 request.session.set_expiry(datetime.today().year + 1)
             response = api_common({})
@@ -217,13 +217,13 @@ class APIUserRegisterView(View):
                 response = api_common({}, -2, _("Incorrect password"))
                 return JsonResponse(response)
 
-            ggacUser = User.objects.filter(mobile=mobile).first()
-            if ggacUser:
+            user = User.objects.filter(mobile=mobile).first()
+            if user:
                 response = api_common({}, -3, _("Mobile has been registered"))
                 return JsonResponse(response)
 
-            ggacUser = User.objects.filter(username=username).first()
-            if ggacUser:
+            user = User.objects.filter(username=username).first()
+            if user:
                 response = api_common({}, -4, _("Username has been registered"))
                 return JsonResponse(response)
 

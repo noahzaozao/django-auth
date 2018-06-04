@@ -4,56 +4,125 @@
 Vue.options.delimiters = ['[[', ']]'];
 Vue.config.productionTip = false;
 
-/**
- * @description 获取数据
- * @param {URIString} url  需要请求数据的接口地址
- * @param {String} method  需要请求type
- * @param {Object} parm 提交的参数
- * */
+window.canRequest = new Array();
 
-window.canRequest = new Array(); //请求条件开关
+/***
+ * Send http POST request and get response data
+ * @param url
+ * @param method
+ * @param param
+ * @param callback
+ * @private
+ */
 function _dqRequest(url, method, param, callback) {
 
-	if(window.canRequest[callback] == undefined || window.canRequest[callback]) {
-		window.canRequest[callback] = false;
-		window.deviceClientWidth = document.body.clientWidth;
-		$.ajax(url, {
-			data: param,
-			crossDomain: true == !(document.all),
-			xhrFields: {
-				withCredentials: true
-			},
-			dataType: 'json',
-			type: method,
-			timeout: 30000,
-			beforeSend: function() {
-				if(window.deviceClientWidth<1200) {
-					Vue.prototype._beforeSendAjax();
-				}
-			},
-			complete: function () {
-				if(window.deviceClientWidth<1200) {
-                	Vue.prototype._completeAjax();
-            	}
+    if (window.canRequest[callback] == undefined || window.canRequest[callback]) {
+        window.canRequest[callback] = false;
+        window.deviceClientWidth = document.body.clientWidth;
+        $.ajax(url, {
+            data: param,
+            crossDomain: true == !(document.all),
+            xhrFields: {
+                withCredentials: true
             },
-			success: function(response) {
-				delete window.canRequest[callback];
-				if(response && response.hasOwnProperty('return_code')) {
-					callback(response);
-				} else {
-					console.log('温馨提示：数据格式错误');
-				}
-				if(window.deviceClientWidth<1200) {
-                	Vue.prototype._completeAjax();
-            	}
-			},
-			error:function(xhr, type, errorThrownhr) {
-				delete window.canRequest[callback];
-				// console.log(new Date() + '【AJAX:ERR】-|T:' + type + '|H:' + errorThrownhr);
-				if(window.deviceClientWidth<1200) {
-                	Vue.prototype._completeAjax();
-            	}
-			}
-		}); //ajax end
-	}
+            dataType: 'json',
+            type: method,
+            timeout: 30000,
+            beforeSend: function () {
+                if (window.deviceClientWidth < 1200) {
+                    Vue.prototype._beforeSendAjax();
+                }
+            },
+            complete: function () {
+                if (window.deviceClientWidth < 1200) {
+                    Vue.prototype._completeAjax();
+                }
+            },
+            success: function (response) {
+                delete window.canRequest[callback];
+                if (response && response.hasOwnProperty('return_code')) {
+                    callback(response);
+                } else {
+                    console.log('Incorrect data format');
+                }
+                if (window.deviceClientWidth < 1200) {
+                    Vue.prototype._completeAjax();
+                }
+            },
+            error: function (xhr, type, errorThrownhr) {
+                delete window.canRequest[callback];
+                // console.log(new Date() + '【AJAX:ERR】-|T:' + type + '|H:' + errorThrownhr);
+                if (window.deviceClientWidth < 1200) {
+                    Vue.prototype._completeAjax();
+                }
+            }
+        }); //ajax end
+    }
+}
+
+/***
+ * Check the str is null
+ * @param str
+ * @returns {boolean}
+ * @private
+ */
+function _checkIsNull(str) {
+    if (!str || str == "" || str.replace(/(^\s*)|(\s*$)/g, "") == "") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/***
+ * Request aliyun to send verification code sms
+ * @param id
+ * @param mobile
+ * @param token
+ * @param type
+ * @param country_code
+ * @returns {boolean}
+ * @private
+ */
+function _getCode(id, mobile, token, type, country_code) {
+
+    if (_checkIsNull(mobile)) {
+        toastr.warning(gettext('Incorrect mobile'));
+        return false;
+    }
+
+    if (typeof(type) == "undefined" || typeof(type) == null || type == "") {
+        type = "";
+    }
+
+    Vue.nextTick(function () {
+        app.isGetCodeForbid = true;
+    })
+
+    var pare = {
+        mobile: mobile,
+        type: type,
+        csrfmiddlewaretoken: token
+    };
+
+    if (country_code) {
+        pare.country_code = country_code;
+    }
+
+    _dqRequest('/api/auth/vcode/', 'POST', pare, function (r) {
+        if (r.hasOwnProperty('return_code')) {
+            if (r.return_code == 0) {
+                toastr.success(gettext(r.return_message));
+                _leftTimeShort(id);
+            } else {
+                toastr.error(r.return_message);
+                return false;
+            }
+        }
+        else {
+            toastr.error(r);
+            return false;
+        }
+
+    });
 }

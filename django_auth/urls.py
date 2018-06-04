@@ -15,12 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url
 
-from django_auth.views import APIUserLoginView, APIUserLogoutView, APIUserRegisterView
+from django_auth.views import APIVerificationCodeView, APIUserLoginView, APIUserLogoutView, APIUserRegisterView
 
 
 app_name = 'django-auth'
 urlpatterns = [
 
+    url(r'^vcode/$', APIVerificationCodeView.as_view()),
     url(r'^login/$', APIUserLoginView.as_view()),
     url(r'^logout/$', APIUserLogoutView.as_view()),
     url(r'^register/$', APIUserRegisterView.as_view()),

@@ -29,7 +29,7 @@ except NameError:
 except Exception as err:
     raise err
 
-# 注意：不要更改
+# Warning! don't change!
 REGION = "cn-hangzhou"
 PRODUCT_NAME = "Dysmsapi"
 DOMAIN = "dysmsapi.aliyuncs.com"
@@ -88,22 +88,22 @@ class APIVerificationCodeView(View):
 
         if type == 'login':
             if country_code == '86':
-                tpl_id = 'SMS_XXX'
+                tpl_id = settings.SMS_TPL_LOGIN_CN_ID
             else:
                 mobile = '00' + country_code + mobile
-                tpl_id = 'SMS_XXX'
+                tpl_id = settings.SMS_TPL_LOGIN_FOREIGN_ID
         elif type == 'forgetpasswd':
             if country_code == '86':
-                tpl_id = 'SMS_XXX'
+                tpl_id = settings.SMS_TPL_FORGETPASSWD_CN_ID
             else:
                 mobile = '00' + country_code + mobile
-                tpl_id = 'SMS_XXX'
+                tpl_id = settings.SMS_TPL_FORGETPASSWD_FOREIGN_ID
         elif type == 'register':
             if country_code == '86':
-                tpl_id = 'SMS_XXX'
+                tpl_id = settings.SMS_TPL_REGISTER_CN_ID
             else:
                 mobile = '00' + country_code + mobile
-                tpl_id = 'SMS_XXX'
+                tpl_id = settings.SMS_TPL_REGISTER_FOREIGN_ID
         else:
             response = api_common({}, -5, 'Incorrect verify code type')
             return JsonResponse(response)

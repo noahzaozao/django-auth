@@ -145,7 +145,7 @@ $(function () {
  */
 function userLogout() {
     var csrfmiddlewaretoken = $("input[name='csrfmiddlewaretoken']").val();
-    _dqRequest('/api/auth/logout', 'POST', {
+    _dqRequest('/api/auth/logout/', 'POST', {
         csrfmiddlewaretoken: csrfmiddlewaretoken
     }, function (r) {
         if (r.return_code == 0) {

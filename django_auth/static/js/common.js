@@ -126,3 +126,40 @@ function _getCode(id, mobile, token, type, country_code) {
 
     });
 }
+
+$(function () {
+    $("#avatarDropdown").hover(
+        function () {
+            $(this).addClass("open");
+            $(".user-arrow-blue").css({'display': 'inline-block'});
+            $(".user-arrow").css({'display': 'none'});
+        }, function () {
+            $(this).removeClass("open");
+            $(".user-arrow").css({'display': 'inline-block'});
+            $(".user-arrow-blue").css({'display': 'none'});
+        });
+});
+
+/***
+ * User Logout
+ */
+function userLogout() {
+    var csrfmiddlewaretoken = $("input[name='csrfmiddlewaretoken']").val();
+    _dqRequest('/api/auth/logout', 'POST', {
+        csrfmiddlewaretoken: csrfmiddlewaretoken
+    }, function (r) {
+        if (r.return_code == 0) {
+
+            toastr.success(gettext("Logout success"));
+
+            localStorage.clear();
+
+            setTimeout(function () {
+                window.location.href = '/';
+            }, 1000);
+
+        } else {
+            toastr.error(r.return_message);
+        }
+    });
+}

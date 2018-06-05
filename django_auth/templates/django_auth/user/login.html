@@ -3,8 +3,6 @@
 {% load i18n static %}
 
 {% block title %}
-<meta name="description" content="description" />
-<meta name="keywords" content="keywords" />
 <title>{% trans 'Login' %}</title>
 {% endblock %}
 
@@ -13,6 +11,8 @@
 {% endblock %}
 
 {% block content %}
+{% include '../layout/header.html' %}
+
 <div id="userLogin">
         <div class="login-title text-center">
             <a href="javascript:;" class="link-style-c1">{% trans 'Login' %}</a>

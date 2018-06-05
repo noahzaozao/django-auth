@@ -3,9 +3,8 @@
 {% load i18n static %}
 
 {% block title %}
-<title>{% trans '注册' %}</title>
+<title>{% trans 'Register' %}</title>
 {% endblock %}
-
 
 {% block css %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
@@ -17,6 +16,7 @@
 {% endblock %}
 
 {% block content %}
+{% include '../layout/header.html' %}
 
     <div id="userRegister">
         <div class="register-title text-center">

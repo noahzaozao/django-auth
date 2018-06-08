@@ -113,7 +113,7 @@ class APIVerificationCodeView(View):
 
         if settings.SMS_SIGN:
             result = send_sms(mobile, tpl_id, "{\"code\":\"" + str(code) + "\"}")
-            result_obj = json.loads(result)
+            result_obj = json.loads(result.decode('utf8'))
             print(result, mobile, country_code, country_code == '86', tpl_id)
             if result_obj['Code'] == "OK":
                 response = api_common({}, 0, 'success')

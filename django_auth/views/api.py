@@ -69,7 +69,6 @@ class APIVerificationCodeView(View):
             country_code = str([int(item) for item in find_lst][0])
 
         verfication_code_req_time = request.session.get('verfication_code_req_time', 0)
-        print verfication_code_req_time, time.time()
         if verfication_code_req_time + 60 >= time.time():
             response = api_common({}, -6, 'Only can get one verify code every 60 seconds')
             return JsonResponse(response)

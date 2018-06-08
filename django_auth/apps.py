@@ -5,4 +5,4 @@ from django.apps import AppConfig
 
 
 class DjangoAConfig(AppConfig):
-    name = 'django_a'
+    name = 'django_auth'
